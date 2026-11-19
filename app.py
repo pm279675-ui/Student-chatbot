@@ -1,18 +1,27 @@
 
 import os
+import requests
 from flask import Flask, render_template, request, jsonify
 from dotenv import load_dotenv
-from groq import Groq
 
 load_dotenv()
 
 app = Flask(__name__)
 app.config["JSON_SORT_KEYS"] = False
 
-API_KEY = os.getenv("GROQ_API_KEY")
-MODEL_NAME = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
+# Cloudflare configuration
+API_TOKEN = os.getenv("CLOUDFLARE_API_TOKEN")
+ACCOUNT_ID = os.getenv("CLOUDFLARE_ACCOUNT_ID")
+MODEL_NAME = os.getenv(
+    "CLOUDFLARE_MODEL",
+    "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
+)
 
-client = Groq(api_key=API_KEY) if API_KEY else None
+API_URL = (
+    f"https://api.cloudflare.com/client/v4/accounts/"
+    f"{ACCOUNT_ID}/ai/run/{MODEL_NAME}"
+    if ACCOUNT_ID else None
+)
 
 SYSTEM_INSTRUCTION = """
 You are CampusMate, a friendly and reliable AI Student Assistant.
@@ -50,18 +59,20 @@ def home():
 
 @app.get("/api/status")
 def status():
+    configured = bool(API_TOKEN and ACCOUNT_ID)
+
     return jsonify({
-        "configured": bool(client),
-        "model": MODEL_NAME if client else None
+        "configured": configured,
+        "model": MODEL_NAME if configured else None
     })
 
 
 @app.post("/api/chat")
 def chat():
 
-    if not client:
+    if not API_TOKEN or not ACCOUNT_ID:
         return jsonify({
-            "error": "Groq API key is missing. Add GROQ_API_KEY to your .env file."
+            "error": "Cloudflare API token or Account ID is missing. Check your .env file."
         }), 503
 
     data = request.get_json(silent=True) or {}
@@ -87,37 +98,49 @@ def chat():
     ]
 
     for item in history[-10:]:
+        if not isinstance(item, dict):
+            continue
 
         role = item.get("role")
         content = item.get("content")
 
         if role in ("user", "model") and isinstance(content, str) and content.strip():
-
-            
-            groq_role = "user" if role == "user" else "assistant"
+            cloudflare_role = "user" if role == "user" else "assistant"
 
             messages.append({
-                "role": groq_role,
+                "role": cloudflare_role,
                 "content": content[:5000]
             })
 
-    
     messages.append({
         "role": "user",
         "content": message
     })
 
     try:
-  
-        response = client.chat.completions.create(
-            model=MODEL_NAME,
-            messages=messages,
-            temperature=0.7,
-            max_tokens=1200
+        response = requests.post(
+            API_URL,
+            headers={
+                "Authorization": f"Bearer {API_TOKEN}",
+                "Content-Type": "application/json"
+            },
+            json={
+                "messages": messages,
+                "temperature": 0.7,
+                "max_tokens": 1200
+            },
+            timeout=90
         )
 
-        answer = response.choices[0].message.content or ""
-        answer = answer.strip()
+        response.raise_for_status()
+
+        result = response.json()
+
+        if not result.get("success", True):
+            raise RuntimeError(str(result.get("errors", "Cloudflare API request failed")))
+
+        answer = result.get("result", {}).get("response", "")
+        answer = answer.strip() if isinstance(answer, str) else ""
 
         if not answer:
             answer = "I couldn't generate a response. Please try again."
@@ -126,14 +149,24 @@ def chat():
             "answer": answer
         })
 
-    except Exception as e:
-        app.logger.exception("Groq API request failed")
-
+    except requests.exceptions.Timeout:
+        app.logger.exception("Cloudflare API timeout")
         return jsonify({
-            "error": f"{type(e).__name__}: {str(e)}"
+            "error": "The AI request timed out. Please try again."
+        }), 504
+
+    except requests.exceptions.RequestException:
+        app.logger.exception("Cloudflare API request failed")
+        return jsonify({
+            "error": "Unable to connect to Cloudflare AI. Check your API settings and try again."
         }), 502
 
-       
+    except Exception:
+        app.logger.exception("Cloudflare AI response error")
+        return jsonify({
+            "error": "Cloudflare AI could not generate a response. Check the server logs."
+        }), 502
+
 
 if __name__ == "__main__":
     app.run(
