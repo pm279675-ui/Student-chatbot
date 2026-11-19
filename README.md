@@ -1,33 +1,43 @@
-# CampusMate – Generative AI Student Assistant
+# 🎓 CampusMate – AI Student Assistant
 
-CampusMate is a web-based student assistant powered by Google's Gemini API. It helps students understand academic concepts, practice programming, prepare for examinations, and plan their learning.
+CampusMate is an AI-powered student assistant chatbot designed to help students with academic queries, programming concepts, study guidance, and general educational support.
 
-## Features
+It uses **Cloudflare Workers AI** to generate intelligent responses through a simple, interactive, and user-friendly chat interface.
 
-- Generative AI responses to student questions
-- Academic explanations in student-friendly language
-- Programming and project guidance
-- Exam revision and study-planning prompts
-- Conversation context during the current browser session
-- Responsive HTML/CSS/JavaScript interface
-- Flask backend with API key stored in an environment file
+## 🚀 Project Overview
 
-## Technology Stack
+CampusMate aims to make learning easier and more accessible by providing students with an AI assistant that can answer questions, explain technical concepts, and offer academic guidance.
 
-- **Frontend:** HTML5, CSS3, JavaScript
-- **Backend:** Python and Flask
-- **Generative AI:** Google Gemini API
-- **SDK:** Google Gen AI Python SDK
-- **Environment management:** python-dotenv
-- **Version control:** Git and GitHub
+## ✨ Features
 
-## Project Structure
+- 🤖 AI-powered chatbot for student assistance
+- 💬 Real-time conversational interface
+- 📚 Academic query assistance
+- 💻 Programming and technical concept explanations
+- 🎨 Simple and user-friendly interface
+- 📱 Responsive web design
+- ☁️ Cloudflare Workers AI integration
+
+## 🛠️ Technologies Used
+
+| Technology | Purpose |
+|---|---|
+| Python | Backend programming |
+| Flask | Web framework |
+| HTML | Webpage structure |
+| CSS | Styling and design |
+| JavaScript | Frontend interaction |
+| Cloudflare Workers AI | AI-powered responses |
+| Git & GitHub | Version control |
+
+## 📂 Project Structure
 
 ```text
-student-ai-assistant/
+Student-chatbot/
 │
 ├── app.py
 ├── requirements.txt
+├── .env
 ├── .env.example
 ├── .gitignore
 ├── README.md
@@ -38,170 +48,111 @@ student-ai-assistant/
 └── static/
     ├── css/
     │   └── style.css
+    │
     └── js/
         └── app.js
 ```
 
-## Requirements
+## ⚙️ Installation and Setup
 
-- Python 3.10 or newer
-- VS Code
-- Internet connection
-- Gemini API key from [Google AI Studio](https://aistudio.google.com/apikey)
-
-## Run the Project in VS Code
-
-### 1. Extract and open the project
-
-Extract the ZIP file. Open VS Code, select **File → Open Folder**, and choose the `student-ai-assistant` folder.
-
-### 2. Open the terminal
-
-In VS Code, select **Terminal → New Terminal**.
-
-### 3. Create a virtual environment
-
-Windows:
-
-```powershell
-py -m venv .venv
-```
-
-Activate it in PowerShell:
-
-```powershell
-.\.venv\Scripts\Activate.ps1
-```
-
-If PowerShell blocks activation, use Command Prompt:
-
-```cmd
-.venv\Scripts\activate.bat
-```
-
-### 4. Install dependencies
+### 1. Clone the Repository
 
 ```bash
-python -m pip install -r requirements.txt
+git clone https://github.com/pm279675-ui/Student-chatbot.git
 ```
 
-### 5. Create your environment file
+### 2. Navigate to the Project Directory
 
-Copy `.env.example` and rename the copy to `.env`.
+```bash
+cd Student-chatbot
+```
 
-Open `.env` and replace the placeholder with your real Gemini API key:
+### 3. Create a Virtual Environment
+
+```bash
+python -m venv venv
+```
+
+### 4. Activate the Virtual Environment
+
+For Windows:
+
+```bash
+venv\Scripts\activate
+```
+
+### 5. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 6. Configure Environment Variables
+
+Create a `.env` file in the project root directory and add:
 
 ```env
-GEMINI_API_KEY=put_your_real_api_key_here
-GEMINI_MODEL=gemini-3.8-flash
+CLOUDFLARE_API_TOKEN=your_cloudflare_api_token
+CLOUDFLARE_ACCOUNT_ID=your_cloudflare_account_id
+CLOUDFLARE_MODEL=@cf/meta/llama-3.1-8b-instruct
 FLASK_DEBUG=false
 ```
 
-Get your key from [Google AI Studio](https://aistudio.google.com/apikey).
+Replace the placeholder values with your actual Cloudflare credentials.
 
-**Important:** Never upload `.env` or share your API key. The `.gitignore` file excludes it from Git.
-
-### 6. Start the application
+### 7. Run the Application
 
 ```bash
 python app.py
 ```
 
-Open this address in your browser:
+Open your browser and visit:
 
 ```text
 http://127.0.0.1:5000
 ```
 
-Keep the terminal running while you use the website. Press `Ctrl + C` to stop the server.
+## 🔐 Security
 
-## How It Works
+- API credentials are stored in environment variables.
+- The `.env` file should never be uploaded to GitHub.
+- The `.gitignore` file helps prevent sensitive files from being committed.
+- Never share your API tokens publicly.
 
-1. A student enters a question in the website.
-2. JavaScript sends the question and recent conversation context to the Flask backend.
-3. Flask validates the input and sends it to the Gemini model through the Google Gen AI SDK.
-4. Gemini generates a response using the student-assistant system instructions.
-5. Flask returns the generated answer as JSON.
-6. JavaScript displays the answer in the chat interface.
+## ☁️ Deployment
 
-## API Configuration
+The application can be deployed using cloud hosting platforms such as:
 
-The application reads the API key from the `GEMINI_API_KEY` environment variable through the `.env` file. The model name can be changed using `GEMINI_MODEL`.
+- Render
+- Vercel
 
-If your selected model is not available, check the models supported by your API key and update `GEMINI_MODEL` accordingly.
+Cloudflare Workers AI is used as the AI inference provider.
 
-## Troubleshooting
+Deployment requires configuring the appropriate environment variables on the hosting platform.
 
-**Error: API key is missing**
+## 🎯 Project Objective
 
-- Confirm that the file is named `.env`, not `.env.txt`.
-- Check that `GEMINI_API_KEY` contains your actual key.
-- Restart the Flask server after editing `.env`.
+The main objective of CampusMate is to develop an AI-powered educational assistant that helps students access academic information, understand programming concepts, and improve their learning experience through conversational AI.
 
-**Error: The AI service could not complete your request**
+## 🔮 Future Enhancements
 
-- Check your internet connection.
-- Verify that the API key is valid and has access to the selected model.
-- Check API usage, quota, and billing restrictions in Google AI Studio.
-- Try a model available to your account.
+- Student login and authentication
+- Personalized learning recommendations
+- Chat history management
+- PDF and document-based question answering
+- Multilingual student support
+- Integration with academic resources
 
-**ModuleNotFoundError**
+## 👨‍💻 Developer
 
-Activate the virtual environment and run:
+**Praveen Mishra**
 
-```bash
-python -m pip install -r requirements.txt
-```
+B.Tech – Computer Science and Engineering
 
-## Upload to GitHub
+## 📄 License
 
-Create a new empty repository on GitHub, for example `student-ai-assistant`.
+This project is developed for educational and learning purposes.
 
-In the VS Code terminal, run these commands from the project folder:
+---
 
-```bash
-git init
-git add .
-git commit -m "Initial commit: CampusMate AI Student Assistant"
-git branch -M main
-git remote add origin https://github.com/YOUR-USERNAME/student-ai-assistant.git
-git push -u origin main
-```
-
-Replace `YOUR-USERNAME` with your GitHub username.
-
-Before pushing, check that `.env` is not listed in:
-
-```bash
-git status
-```
-
-If you accidentally committed an API key, revoke that key in Google AI Studio and create a new one. Removing the file in a later commit does not make an exposed key safe.
-
-## Current Project Scope and Limitations
-
-- Chat context is held in the browser and is not saved permanently.
-- There is no user login or database in this starter version.
-- Responses are generated by an external Gemini API and require internet access.
-- AI responses can be incorrect; verify important academic information.
-- For public deployment, add authentication, request limits, secure hosting, logging controls, and stronger input validation.
-
-## Future Enhancements
-
-- Student login and registration
-- Store chat history in a database
-- Upload notes and PDFs for question answering (RAG)
-- Subject selection and personalized study plans
-- Quiz generation and performance tracking
-- Voice-based question answering
-- Admin dashboard
-
-## Author
-
-**Praveen Mishra**  
-B.Tech – Computer Science and Engineering  
-Section: CSE24
-
-## License
-
-This project is available for educational and learning purposes. Add a license file if you want to specify reuse and distribution terms.
+⭐ If you find this project useful, consider giving the repository a star!
