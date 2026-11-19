@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="CampusMate is a Generative AI student assistant for learning, coding and exam preparation.">
+  <title>CampusMate | AI Student Assistant</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand"><div class="brand-mark">C</div><div><strong>CampusMate</strong><span>AI STUDENT ASSISTANT</span></div></div>
+      <button class="new-chat" id="newChatBtn">＋ <span>New conversation</span></button>
+      <div class="side-label">QUICK PROMPTS</div>
+      <button class="prompt" data-prompt="Explain object-oriented programming with a simple example.">⌘ <span>Explain a concept</span></button>
+      <button class="prompt" data-prompt="Help me create a realistic study timetable for my exams.">▦ <span>Make a study plan</span></button>
+      <button class="prompt" data-prompt="Explain this Python code line by line: ">⌁ <span>Understand code</span></button>
+      <button class="prompt" data-prompt="Give me 10 important revision questions about computer networks.">✎ <span>Exam revision</span></button>
+      <div class="sidebar-bottom"><div class="status-dot"></div><span id="connectionStatus">Checking AI connection…</span></div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar"><div class="mobile-brand">CampusMate</div><div class="model-pill"><span class="live-dot"></span> Generative AI assistant</div></header>
+      <section class="chat-area" id="chatArea">
+        <div class="welcome" id="welcome">
+          <div class="welcome-icon">✦</div>
+          <p class="eyebrow">YOUR PERSONAL LEARNING COMPANION</p>
+          <h1>Learn better.<br><span>One question at a time.</span></h1>
+          <p class="welcome-copy">Ask questions, understand difficult topics, practice coding, and prepare for exams with AI-powered support.</p>
+          <div class="suggestion-grid">
+            <button class="suggestion" data-prompt="Explain machine learning in simple words with an example."><b>✧ Understand concepts</b><span>Explain machine learning simply</span></button>
+            <button class="suggestion" data-prompt="Teach me Python functions with examples and practice questions."><b>⌘ Learn programming</b><span>Practice Python functions</span></button>
+            <button class="suggestion" data-prompt="Create a 7-day exam revision plan for a computer science student."><b>▦ Prepare for exams</b><span>Build a 7-day revision plan</span></button>
+            <button class="suggestion" data-prompt="Give me a beginner-friendly roadmap to build a student management system."><b>✎ Work on projects</b><span>Plan a student project</span></button>
+          </div>
+        </div>
+        <div class="messages" id="messages" aria-live="polite"></div>
+      </section>
+      <footer class="composer-wrap">
+        <form class="composer" id="chatForm">
+          <textarea id="messageInput" rows="1" maxlength="5000" placeholder="Ask CampusMate anything…" aria-label="Your message"></textarea>
+          <button type="submit" id="sendBtn" aria-label="Send message"><span>↑</span></button>
+        </form>
+        <p class="disclaimer">CampusMate can make mistakes. Verify important academic information.</p>
+      </footer>
+    </main>
+  </div>
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
