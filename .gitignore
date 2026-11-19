@@ -1,5 +1,8 @@
+
 # Secrets
 .env
+.env.*
+!.env.example
 *.key
 
 # Python
@@ -8,6 +11,13 @@ __pycache__/
 .venv/
 venv/
 env/
+
+# Build files
+build/
+dist/
+
+# Logs
+*.log
 
 # Editors and OS
 .vscode/
