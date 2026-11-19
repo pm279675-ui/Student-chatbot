@@ -108,8 +108,7 @@ def chat():
     })
 
     try:
-
-        
+  
         response = client.chat.completions.create(
             model=MODEL_NAME,
             messages=messages,
@@ -118,7 +117,6 @@ def chat():
         )
 
         answer = response.choices[0].message.content or ""
-
         answer = answer.strip()
 
         if not answer:
@@ -128,14 +126,14 @@ def chat():
             "answer": answer
         })
 
-    except Exception:
-      app.logger.exception("Groq API request failed")
+    except Exception as e:
+        app.logger.exception("Groq API request failed")
 
-    return jsonify({
-        "error": f"{type(e).__name__}: {str(e)}"
-    }), 502
-      
+        return jsonify({
+            "error": f"{type(e).__name__}: {str(e)}"
+        }), 502
 
+       
 
 if __name__ == "__main__":
     app.run(
